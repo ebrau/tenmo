@@ -14,7 +14,7 @@ import javax.security.auth.login.AccountNotFoundException;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping(path = "/accounts")
+@RequestMapping(path = "account")
 @PreAuthorize("isAuthenticated()")
 public class AccountController {
 
@@ -25,9 +25,9 @@ public class AccountController {
         this.accountDao = accountDao;
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public BigDecimal seeBalance(@PathVariable int userId) throws AccountNotFoundException {
-        return accountDao.seeBalance(userId);
+    @RequestMapping(path = "/balance", method = RequestMethod.GET)
+    public BigDecimal seeBalance(@PathVariable String authToken) throws AccountNotFoundException {
+        return accountDao.seeBalance(authToken);
     }
 
 

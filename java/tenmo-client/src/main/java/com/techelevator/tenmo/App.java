@@ -73,7 +73,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-		BigDecimal balance = accountService.seeBalance();
+		BigDecimal balance = accountService.seeBalance(currentUser.getToken());
 		System.out.println("Your balance is: " + balance);
 		
 	}
