@@ -93,14 +93,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void sendBucks() {
 		// TODO Auto-generated method stub
 		User[] rawListUsers = accountService.findAll(currentUser);
-		//consoleService.printList(rawListUsers)
-		for (User user : rawListUsers) {
-			if (user.getId() != currentUser.getUser().getId()) {
-				System.out.println("User ID: " + user.getId() + " User Name: " + user.getUsername());
-			}
-		}
-
-
+		console.printAllUsers(currentUser,rawListUsers);
+		console.getRecipientId();
 	}
 
 	private void requestBucks() {

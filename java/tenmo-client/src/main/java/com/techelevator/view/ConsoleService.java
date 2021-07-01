@@ -1,6 +1,9 @@
 package com.techelevator.view;
 
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -10,6 +13,7 @@ public class ConsoleService {
 
 	private PrintWriter out;
 	private Scanner in;
+	private User user;
 
 	public ConsoleService(InputStream input, OutputStream output) {
 		this.out = new PrintWriter(output, true);
@@ -73,4 +77,37 @@ public class ConsoleService {
 		} while(result == null);
 		return result;
 	}
-}
+
+	public void printAllUsers(AuthenticatedUser currentUser,User[] rawListUsers) {
+		System.out.println("-------------------------------------------\r\n" +
+				"Users\r\n" +
+				"ID\t\tName\r\n" +
+				"-------------------------------------------");
+		for (User user : rawListUsers) {
+			if (user.getId() != currentUser.getUser().getId()) {
+				System.out.println( user.getId() + "    "  + user.getUsername());
+			}
+		}
+		System.out.println("---------");
+	}
+
+	public Integer getRecipientId() {
+		Integer recipientId = 0;
+		do {
+			System.out.println("Enter ID of user you are sending to (0 to cancel):");
+			String userInput = in.nextLine();
+			try {
+				recipientId = Integer.parseInt(userInput);
+			} catch (NumberFormatException e) {
+				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
+			}
+		}
+		while (recipientId == 0) ;
+			return recipientId;
+
+		}
+	}
+
+
+
+
