@@ -36,18 +36,7 @@ public class JdbcTransferDao implements TransferDao {
         }
        return transfers;
     }
-   /* @Override
-    public List<City> getCitiesByState(String stateAbbreviation) {
-        List<City> cities = new ArrayList<>();
-        String sql = "SELECT city_id, city_name, state_abbreviation, population, area " +
-                "FROM city " +
-                "WHERE state_abbreviation = ?;";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, stateAbbreviation);
-        while (results.next()) {
-            cities.add(mapRowToCity(results));
-        }
-        return cities;
-    }*/
+
 
     @Override
     public Transfer getTransfer(int transferId) {
@@ -56,7 +45,21 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public Transfer createTransfer(Transfer transfer) {
-        return null;
+        String sql = "INSERT INTO transfers (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to,amount)"+
+                "VALUES (?,?,?,?,?,?) RETURNING transfer_id;";
+        int newId = jdbcTemplate.queryForObject(sql, int.class,
+                transfer.getTransferId(), transfer.getTransferType(),transfer.getTransferStatus(),transfer.getAccountFrom(),
+                transfer.getAccountTo(),transfer.getAmount());
+        return getTransfer(newId);
     }
 }
+/* @Override
+public City createCity(City city) {
+        String sql = "INSERT INTO city (city_name, state_abbreviation, population, area) " +
+        "VALUES (?, ?, ?, ?) RETURNING city_id;";
+        Long newId = jdbcTemplate.queryForObject(sql, Long.class,
+        city.getCityName(), city.getStateAbbreviation(), city.getPopulation(), city.getArea());
+
+        return getCity(newId);
+        }*/
 
