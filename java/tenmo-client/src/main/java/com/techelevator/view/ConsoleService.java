@@ -7,6 +7,7 @@ import com.techelevator.tenmo.model.User;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -58,7 +59,7 @@ public class ConsoleService {
 	}
 
 	public String getUserInput(String prompt) {
-		out.print(prompt+": ");
+		out.print(prompt + ": ");
 		out.flush();
 		return in.nextLine();
 	}
@@ -66,26 +67,26 @@ public class ConsoleService {
 	public Integer getUserInputInteger(String prompt) {
 		Integer result = null;
 		do {
-			out.print(prompt+": ");
+			out.print(prompt + ": ");
 			out.flush();
 			String userInput = in.nextLine();
 			try {
 				result = Integer.parseInt(userInput);
-			} catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
 			}
-		} while(result == null);
+		} while (result == null);
 		return result;
 	}
 
-	public void printAllUsers(AuthenticatedUser currentUser,User[] rawListUsers) {
+	public void printAllUsers(AuthenticatedUser currentUser, User[] rawListUsers) {
 		System.out.println("-------------------------------------------\r\n" +
 				"Users\r\n" +
 				"ID\t\tName\r\n" +
 				"-------------------------------------------");
 		for (User user : rawListUsers) {
 			if (user.getId() != currentUser.getUser().getId()) {
-				System.out.println( user.getId() + "    "  + user.getUsername());
+				System.out.println(user.getId() + "    " + user.getUsername());
 			}
 		}
 		System.out.println("---------");
@@ -94,7 +95,7 @@ public class ConsoleService {
 	public Integer getRecipientId() {
 		Integer recipientId = 0;
 		do {
-			System.out.println("Enter ID of user you are sending to (0 to cancel):");
+			System.out.print("Enter ID of user you are sending to (0 to cancel):");
 			String userInput = in.nextLine();
 			try {
 				recipientId = Integer.parseInt(userInput);
@@ -102,11 +103,28 @@ public class ConsoleService {
 				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
 			}
 		}
-		while (recipientId == 0) ;
-			return recipientId;
-
-		}
+		while (recipientId == 0);
+		return recipientId;
 	}
+
+	public BigDecimal getTransferAmount() {
+		Integer transferAmount = 0;
+		do {
+			System.out.print("Enter amount: ");
+			String userInput = in.nextLine();
+			try {
+				transferAmount = Integer.parseInt(userInput);
+			} catch (NumberFormatException e) {
+				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
+			}
+		}
+		while (transferAmount == 0) ;
+		BigDecimal transferTotal = new BigDecimal(transferAmount.toString());
+		return transferTotal;
+	}
+
+}
+
 
 
 

@@ -1,15 +1,16 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+import com.techelevator.tenmo.services.TransferService;
 import com.techelevator.view.ConsoleService;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public class App {
 
@@ -31,16 +32,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private ConsoleService console;
     private AuthenticationService authenticationService;
     private AccountService accountService;
+    private TransferService transferService;
 
     public static void main(String[] args) {
-    	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL), new AccountService(API_BASE_URL));
+    	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL), new AccountService(API_BASE_URL), new TransferService(API_BASE_URL));
     	app.run();
     }
 
-    public App(ConsoleService console, AuthenticationService authenticationService, AccountService accountService) {
+    public App(ConsoleService console, AuthenticationService authenticationService, AccountService accountService, TransferService transferService) {
 		this.console = console;
 		this.authenticationService = authenticationService;
 		this.accountService = accountService;
+		this.transferService = transferService;
 	}
 
 	public void run() {
@@ -92,9 +95,27 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
+		//Get List of Users
 		User[] rawListUsers = accountService.findAll(currentUser);
 		console.printAllUsers(currentUser,rawListUsers);
-		console.getRecipientId();
+
+		//Prompt user for Recipient ID (transfer data)
+		int recipientId = console.getRecipientId();
+
+		//Prompt user for Amount (transfer data)
+		BigDecimal transferAmount = console.getTransferAmount();
+
+		//Infer from currentUser the Sender ID
+		int senderId = currentUser.getUser().getId();
+
+		System.out.println(recipientId + " " + transferAmount + " " + senderId);
+
+		//Once we have the transfer data, we have to create the transfer
+		Transfer newTransfer = transferService.createTransfer(recipientId, transferAmount, senderId);
+		System.out.println(newTransfer.getAccountFrom() + " " + newTransfer.getTransferId());
+
+		//In Transfer Service, the addTransfer method itself calls MAKE transfer method
+
 	}
 
 	private void requestBucks() {
