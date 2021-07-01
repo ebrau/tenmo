@@ -25,12 +25,10 @@ public class AccountController {
         this.accountDao = accountDao;
     }
 
-    @RequestMapping(path = "/balance", method = RequestMethod.GET)
-    public BigDecimal seeBalance(@PathVariable String authToken) throws AccountNotFoundException {
-        return accountDao.seeBalance(authToken);
+    //Request Methods
+    @RequestMapping(path = "/{id}/balance", method = RequestMethod.GET)
+    public BigDecimal seeBalance(@PathVariable("id") int userId) throws AccountNotFoundException {
+        return accountDao.seeBalance(userId);
     }
-
-
-
 
 }

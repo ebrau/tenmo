@@ -1,51 +1,43 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.view.ConsoleService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.security.auth.login.AccountNotFoundException;
 import java.math.BigDecimal;
 
 public class AccountService {
-    public static String AUTH_TOKEN = "";
-    private final String API_BASE_URL;
+    private String url;
     private RestTemplate restTemplate = new RestTemplate();
-    private AuthenticatedUser currentUser;
-    //private ConsoleService console = new ConsoleService();
 
     //Constructor
-    public AccountService(String url) {
-        this.API_BASE_URL = url+"account";
+    public AccountService(String baseUrl) {
+        this.url = baseUrl + "account/";
     }
 
+    //http://localhost:8080/account/{id}/balance
+
     //Make Auth Entity Method
-    private HttpHeaders authHeaders(String authToken) {
+    private HttpEntity makeAuthEntity(AuthenticatedUser currentUser) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(AUTH_TOKEN);
-        return headers;
+        headers.setBearerAuth(currentUser.getToken());
+        HttpEntity entity = new HttpEntity(headers);
+        return entity;
     }
 
     //Methods
-    public BigDecimal seeBalance(String authToken) {
-        HttpEntity<?> entity = new HttpEntity<>(authHeaders(authToken));
-        ResponseEntity<BigDecimal>result = restTemplate.exchange(API_BASE_URL + "/balance" , HttpMethod.GET, entity, BigDecimal.class);
-        return result.getBody();
-
-    }
-    /*public BigDecimal seeBalance() {
-        BigDecimal balance = new BigDecimal("500.00");
+    public BigDecimal seeBalance(AuthenticatedUser currentUser) {
+        BigDecimal balance = null;
         try {
-            balance = restTemplate.exchange(API_BASE_URL + "balance/" + currentUser.getUser().getId(), HttpMethod.GET, makeAuthEntity(), BigDecimal.class).getBody();
-        } catch (RestClientResponseException ex) {
+            balance = restTemplate.exchange(url + currentUser.getUser().getId() + "/balance", HttpMethod.GET, makeAuthEntity(currentUser), BigDecimal.class).getBody();
+        } catch (RestClientException ex) {
             System.out.println("We could not retrieve your balance.");
+        } catch (NullPointerException ex) {
+            System.out.println("Null pointer...");
         }
         return balance;
-    }*/
-
+    }
 }

@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 
 public interface AccountDao {
 
-    BigDecimal seeBalance(String authToken);
+    BigDecimal seeBalance(int userId);
 
 }

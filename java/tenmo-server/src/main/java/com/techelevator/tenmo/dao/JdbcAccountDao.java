@@ -18,12 +18,13 @@ public class JdbcAccountDao implements AccountDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //Methods
     @Override
-    public BigDecimal seeBalance(String authToken) {
+    public BigDecimal seeBalance(int userId) {
         String sql = "SELECT balance FROM accounts WHERE user_id = ?;";
-        BigDecimal id = jdbcTemplate.queryForObject(sql, BigDecimal.class, authToken);
-        if (id != null) {
-            return id;
+        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
+        if (balance != null) {
+            return balance;
         } else {
             return zero;
         }

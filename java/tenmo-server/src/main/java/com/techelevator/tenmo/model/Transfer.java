@@ -19,7 +19,7 @@ public class Transfer {
     @Positive(message = "Transfer amount can't be negative")
     private BigDecimal amount;
 
-    //constructor
+    //Constructor
     public Transfer(){
 
     }
@@ -32,7 +32,7 @@ public class Transfer {
       this.amount = amount;
     }
 
-    //getters
+    //Getters
 
     public int getTransferId() {
         return transferId;
@@ -57,8 +57,8 @@ public class Transfer {
     public BigDecimal getAmount() {
         return amount;
     }
-    //setters
 
+    //Setters
     public void setTransferId(int transferId) {
         this.transferId = transferId;
     }
