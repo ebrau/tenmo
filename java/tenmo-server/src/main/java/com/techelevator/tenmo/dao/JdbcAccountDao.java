@@ -5,6 +5,7 @@ import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.math.BigDecimal;
 
@@ -30,7 +31,8 @@ public class JdbcAccountDao implements AccountDao {
         }
     }
 
-    @Override
+    //Attempt
+    /*@Override
     public Account getAccountByUserId(int userId){
         Account account = null;
         String sql = "SELECT * FROM accounts WHERE user_id = ?";
@@ -38,11 +40,24 @@ public class JdbcAccountDao implements AccountDao {
         if(results.next()){
             account = mapRowToAccount(results);
             return account;
-
         } else {
             throw new RuntimeException("Unable to lookup account by userId " + userId);
         }
-    }
+    }*/
+
+    //New One with while
+    @Override
+    public Account getAccountByUserId(int userId){
+        Account account = null;
+        String sql = "SELECT * FROM accounts WHERE user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        while (results.next()){
+            account = mapRowToAccount(results);
+            return account;
+        }
+        return account;
+        }
+
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();
         account.setAccountId(rs.getInt("account_id"));
@@ -51,5 +66,26 @@ public class JdbcAccountDao implements AccountDao {
         return account;
     }
 
+    @Override
+    public BigDecimal addtoBalance(BigDecimal amount, int userId) {
+        String sql = "UPDATE accounts SET balance = (balance + ?)  WHERE user_id = ? RETURNING balance;";
+        try {
+            return jdbcTemplate.queryForObject(sql, BigDecimal.class, amount, userId);
+        } catch(ResourceAccessException re){
+            System.out.println("Cannot connect to database");
+        }
+        return jdbcTemplate.queryForObject(sql, BigDecimal.class, amount, userId);
+    }
+
+    @Override
+    public BigDecimal subtractFromBalance(BigDecimal amount, int userFrom){
+        String sql = "UPDATE accounts SET balance = (balance - ?)  WHERE user_id = ? RETURNING balance;";
+        try {
+            return jdbcTemplate.queryForObject(sql, BigDecimal.class, amount, userFrom);
+        } catch(ResourceAccessException re){
+            System.out.println("Cannot connect to database");
+        }
+        return jdbcTemplate.queryForObject(sql, BigDecimal.class, amount, userFrom);
+    }
 
 }

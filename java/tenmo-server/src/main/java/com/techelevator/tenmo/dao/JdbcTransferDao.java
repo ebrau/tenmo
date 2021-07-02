@@ -71,34 +71,29 @@ public class JdbcTransferDao implements TransferDao {
         //Todo: We had to remove .getId() from line 70 & 71, I don't know why
         Account fromAccount = accountDao.getAccountByUserId(newTransfer.getUserFrom());
         Account toAccount = accountDao.getAccountByUserId(newTransfer.getUserTo());
+        BigDecimal amount = newTransfer.getAmount();
+        int newTransferId = 0;
 
-        String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
-        int newTransferId = jdbcTemplate.queryForObject(sql, Integer.class, transferTypeId, transferStatusId, fromAccount.getAccountId(), toAccount.getAccountId(), newTransfer.getAmount());
+        if (fromAccount == toAccount) {
+            System.out.println("You can't send money to yourself!!!");
+        }
+
+        if(amount.compareTo(fromAccount.getBalance()) == -1 || amount.compareTo(fromAccount.getBalance()) == 0) {
+
+            String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
+            newTransferId = jdbcTemplate.queryForObject(sql, Integer.class, transferTypeId, transferStatusId,
+                    fromAccount.getAccountId(), toAccount.getAccountId(), newTransfer.getAmount());
+
+            accountDao.addtoBalance(amount, newTransfer.getUserTo());
+            accountDao.subtractFromBalance(amount, newTransfer.getUserFrom());
+
+            System.out.println("Transfer completed!");
+        } else{
+            System.out.println("Transfer failed due to insufficient funds");
+        }
 
         //log.debug("created new Transfer with ID: "+newTransferId);
         return newTransferId;
     }
-
-    //TODO: Delete first attempt below
-    /*//TODO: I haven't seen an example of a JDBC create method taking more than one parameter
-    //We have only seen it doing "save(CatCard card)" where it takes the full object as a parameter
-    //Do we need to the alter the parameters in the TransferController?
-    @Override
-    public void createTransfer(int senderId, int recipientId, BigDecimal amount) {
-        String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "+
-                "VALUES (2, 2, " +
-                "(SELECT account_id FROM accounts WHERE user_id = ?), " +
-                "(SELECT account_id FROM accounts WHERE user_id = ?), ?);";
-        int newId = jdbcTemplate.update(sql, senderId, recipientId, amount);
-    }*/
 }
-/* @Override
-public City createCity(City city) {
-        String sql = "INSERT INTO city (city_name, state_abbreviation, population, area) " +
-        "VALUES (?, ?, ?, ?) RETURNING city_id;";
-        Long newId = jdbcTemplate.queryForObject(sql, Long.class,
-        city.getCityName(), city.getStateAbbreviation(), city.getPopulation(), city.getArea());
-
-        return getCity(newId);
-        }*/
 

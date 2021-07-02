@@ -22,6 +22,7 @@ public class Transfer {
     public Transfer(){
 
     }
+
     public Transfer(int transferId, String transferType, String transferStatus, int userFrom, int userTo, BigDecimal amount){
       this.transferId = transferId;
       this.transferType = transferType;

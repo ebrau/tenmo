@@ -24,25 +24,11 @@ public class TransferController {
         this.userDao = userDao;
     }
 
-
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "", method = RequestMethod.POST)
     public void createTransfer(@Valid @RequestBody Transfer incomingTransfer) {
         transferDao.createTransfer(incomingTransfer);
     }
-
-  //TODO: Delete first attempt below
-    //Request Methods
-    /*@ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "", method = RequestMethod.POST)
-    public void createTransfer(@Valid @RequestBody Transfer incomingTransfer) {
-        Transfer thisTransfer = incomingTransfer;
-        //return transferDao.createTransfer();
-        transferDao.createTransfer(incomingTransfer.getAccountFrom(), incomingTransfer.getAccountTo(), incomingTransfer.getAmount());
-       // results = transferDao.createTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
-       // return results;
-    }*/
-
 
 }
 

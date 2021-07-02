@@ -5,23 +5,24 @@ import java.math.BigDecimal;
 
 public class Transfer {
     private int transferId;
-    private int transferType;
-    private int transferStatus;
-    private int accountFrom;
-    private int accountTo;
+    private String transferType;
+    private String transferStatus;
+    private int userFrom;
+    private int userTo;
     private BigDecimal amount;
 
-    //Constructor
+
+    //Constructors
     public Transfer(){
 
         //TODO: WE MAY NOT NEED THIS \/
     }
-    public Transfer(int transferId, int transferType,int transferStatus, int accountFrom, int accountTo,BigDecimal amount){
+    public Transfer(int transferId, String transferType, String transferStatus, int userFrom, int userTo, BigDecimal amount){
         this.transferId = transferId;
         this.transferType = transferType;
         this.transferStatus = transferStatus;
-        this.accountFrom = accountFrom;
-        this.accountTo = accountTo;
+        this.userFrom = userFrom;
+        this.userTo = userTo;
         this.amount = amount;
     }
 
@@ -31,20 +32,20 @@ public class Transfer {
         return transferId;
     }
 
-    public int getTransferType() {
+    public String getTransferType() {
         return transferType;
     }
 
-    public int getTransferStatus() {
+    public String getTransferStatus() {
         return transferStatus;
     }
 
-    public int getAccountFrom() {
-        return accountFrom;
+    public int getUserFrom() {
+        return userFrom;
     }
 
-    public int getAccountTo() {
-        return accountTo;
+    public int getUserTo() {
+        return userTo;
     }
 
     public BigDecimal getAmount() {
@@ -56,20 +57,20 @@ public class Transfer {
         this.transferId = transferId;
     }
 
-    public void setTransferType(int transferType) {
+    public void setTransferType(String transferType) {
         this.transferType = transferType;
     }
 
-    public void setTransferStatus(int transferStatus) {
+    public void setTransferStatus(String transferStatus) {
         this.transferStatus = transferStatus;
     }
 
-    public void setAccountFrom(int accountFrom) {
-        this.accountFrom = accountFrom;
+    public void setUserFrom(int userFrom) {
+        this.userFrom = userFrom;
     }
 
-    public void setAccountTo(int accountTo) {
-        this.accountTo = accountTo;
+    public void setUserTo(int userTo) {
+        this.userTo = userTo;
     }
 
     public void setAmount(BigDecimal amount) {

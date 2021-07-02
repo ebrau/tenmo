@@ -10,4 +10,8 @@ public interface AccountDao {
 
     Account getAccountByUserId(int userId);
 
+    BigDecimal addtoBalance(BigDecimal amount, int userTo);
+
+    BigDecimal subtractFromBalance(BigDecimal amount, int userFrom);
+
 }

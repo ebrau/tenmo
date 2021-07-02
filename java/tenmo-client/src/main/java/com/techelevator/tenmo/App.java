@@ -95,26 +95,36 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		//Get List of Users
+		//Get and Display List of Users
 		User[] rawListUsers = accountService.findAll(currentUser);
-		console.printAllUsers(currentUser,rawListUsers);
+		console.printAllUsers(currentUser, rawListUsers);
 
-		//Prompt user for Recipient ID (transfer data)
-		int recipientId = console.getRecipientId();
+		//Prompt and store userToID (transfer data)
+		int userTo = console.getRecipientId();
 
-		//Prompt user for Amount (transfer data)
+		//Prompt and store userFromID (transfer data)
 		BigDecimal transferAmount = console.getTransferAmount();
 
 		//Infer from currentUser the Sender ID
-		int senderId = currentUser.getUser().getId();
+		int userFrom = currentUser.getUser().getId();
 
-		System.out.println(recipientId + " " + transferAmount + " " + senderId);
+		System.out.println(userTo + " " + transferAmount + " " + userFrom);
 
 		//Once we have the transfer data, we have to create the transfer
-		Transfer newTransfer = transferService.createTransfer(recipientId, transferAmount, senderId);
-		System.out.println(newTransfer.getAccountFrom() + " " + newTransfer.getTransferId());
+		Transfer transferRequest = new Transfer();
+		transferRequest.setTransferStatus("Approved");
+		transferRequest.setTransferType("Send");
+		transferRequest.setUserFrom(userFrom);
+		transferRequest.setUserTo(userTo);
+		transferRequest.setAmount(transferAmount);
 
-		//In Transfer Service, the addTransfer method itself calls MAKE transfer method
+		transferService.addTransfer(transferRequest);
+
+
+			//Transfer transferRequest = transferService.createTransfer(userTo, transferAmount, userFrom);
+			//System.out.println(transferRequest.getUserFrom() + " " + transferRequest.getTransferId());
+
+			//In Transfer Service, the addTransfer method itself calls MAKE transfer method
 
 	}
 
