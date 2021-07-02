@@ -16,8 +16,8 @@ public class JdbcTransferDao implements TransferDao {
     private JdbcTemplate jdbcTemplate;
     private BigDecimal zero = new BigDecimal("0.00");
     private AccountDao accountDao;
-    public JdbcTransferDao(JdbcTemplate jdbcTemplate, AccountDao accountDao) {
 
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate, AccountDao accountDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.accountDao = accountDao;
     }
@@ -64,18 +64,19 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public int createTransfer(Transfer newTransfer){
+
         int transferTypeId = getTransferTypeId(newTransfer.getTransferType());
         int transferStatusId = getTransferStatusId(newTransfer.getTransferStatus());
+
         //Todo: We had to remove .getId() from line 70 & 71, I don't know why
         Account fromAccount = accountDao.getAccountByUserId(newTransfer.getUserFrom());
         Account toAccount = accountDao.getAccountByUserId(newTransfer.getUserTo());
 
-        String sql = "INSERT INTO transfers (transfer_type_id,transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
-        int newTransferId = jdbcTemplate.update(sql, transferTypeId, transferStatusId, fromAccount.getAccountId(), toAccount.getAccountId(), newTransfer.getAmount());
+        String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
+        int newTransferId = jdbcTemplate.queryForObject(sql, Integer.class, transferTypeId, transferStatusId, fromAccount.getAccountId(), toAccount.getAccountId(), newTransfer.getAmount());
 
         //log.debug("created new Transfer with ID: "+newTransferId);
         return newTransferId;
-
     }
 
     //TODO: Delete first attempt below

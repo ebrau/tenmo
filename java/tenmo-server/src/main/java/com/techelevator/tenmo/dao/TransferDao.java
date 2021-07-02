@@ -11,7 +11,7 @@ public interface TransferDao {
 
   Transfer getTransfer(int transferId);
 
-  void createTransfer(int userId, int receivedId, BigDecimal amount);
+  int createTransfer(Transfer transfer);
 
 
 }

@@ -23,6 +23,14 @@ public class TransferController {
         this.transferDao = transferDao;
         this.userDao = userDao;
     }
+
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(path = "", method = RequestMethod.POST)
+    public void createTransfer(@Valid @RequestBody Transfer incomingTransfer) {
+        transferDao.createTransfer(incomingTransfer);
+    }
+
   //TODO: Delete first attempt below
     //Request Methods
     /*@ResponseStatus(HttpStatus.CREATED)
