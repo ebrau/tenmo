@@ -1,18 +1,19 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class Transfer {
     private int transferId;
-    private int transferTypeId;
-    private int transferStatusId;
+    private String transferType;
+    private String transferStatus;
 
-    //@Min(value = 1, message = "A non zero id is required for accountFrom")
-    private int accountFrom;
+    @Min(value = 1, message = "A non zero id is required for accountFrom")
+    private int userFrom;
 
-   // @Min(value = 1, message = "A non zero id is required for accountTo")
-    private int accountTo;
+    @Min(value = 1, message = "A non zero id is required for accountTo")
+    private int userTo;
 
     @Positive(message = "Transfer amount can't be negative")
     private BigDecimal amount;
@@ -21,12 +22,12 @@ public class Transfer {
     public Transfer(){
 
     }
-    public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFrom, int accountTo, BigDecimal amount){
+    public Transfer(int transferId, String transferType, String transferStatus, int userFrom, int userTo, BigDecimal amount){
       this.transferId = transferId;
-      this.transferTypeId = transferTypeId;
-      this.transferStatusId = transferStatusId;
-      this.accountFrom = accountFrom;
-      this.accountTo = accountTo;
+      this.transferType = transferType;
+      this.transferStatus = transferStatus;
+      this.userFrom = userFrom;
+      this.userTo = userTo;
       this.amount = amount;
     }
 
@@ -36,20 +37,18 @@ public class Transfer {
         return transferId;
     }
 
-    public int getTransferTypeId() {
-        return transferTypeId;
+    public String getTransferType() { return transferType; }
+
+    public String getTransferStatus() {
+        return transferStatus;
     }
 
-    public int getTransferStatusId() {
-        return transferStatusId;
+    public int getUserFrom() {
+        return userFrom;
     }
 
-    public int getAccountFrom() {
-        return accountFrom;
-    }
-
-    public int getAccountTo() {
-        return accountTo;
+    public int getUserTo() {
+        return userTo;
     }
 
     public BigDecimal getAmount() {
@@ -61,20 +60,20 @@ public class Transfer {
         this.transferId = transferId;
     }
 
-    public void setTransferTypeId(int transferTypeId) {
-        this.transferTypeId = transferTypeId;
+    public void setTransferType(String transferType) {
+        this.transferType = transferType;
     }
 
-    public void setTransferStatusId(int transferStatusId) {
-        this.transferStatusId = transferStatusId;
+    public void setTransferStatus(String transferStatus) {
+        this.transferStatus = transferStatus;
     }
 
-    public void setAccountFrom(int accountFrom) {
-        this.accountFrom = accountFrom;
+    public void setUserFrom(int accountFrom) {
+        this.userFrom = accountFrom;
     }
 
-    public void setAccountTo(int accountTo) {
-        this.accountTo = accountTo;
+    public void setUserTo(int userTo) {
+        this.userTo = userTo;
     }
 
     public void setAmount(BigDecimal amount) {

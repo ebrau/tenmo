@@ -13,9 +13,11 @@ public class JdbcAccountDao implements AccountDao {
 
     private JdbcTemplate jdbcTemplate;
     private BigDecimal zero = new BigDecimal("0.00");
+    private TransferDao transferDao;
+    public JdbcAccountDao(JdbcTemplate jdbcTemplate, TransferDao transferDao) {
 
-    public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.transferDao = transferDao;
     }
 
     //Methods
@@ -30,6 +32,18 @@ public class JdbcAccountDao implements AccountDao {
         }
     }
 
+    public Account getAccountByUserId(int userId){
+        Account account = null;
+        String sql = "SELECT account_id FROM accounts WHERE user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        if(results.next()){
+            account = mapRowToAccount(results);
+            return account;
+
+        } else {
+            throw new RuntimeException("Unable to lookup account by userId " + userId);
+        }
+    }
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();
         account.setAccountId(rs.getInt("account_id"));

@@ -23,9 +23,9 @@ public class TransferController {
         this.transferDao = transferDao;
         this.userDao = userDao;
     }
-
+  //TODO: Delete first attempt below
     //Request Methods
-    @ResponseStatus(HttpStatus.CREATED)
+    /*@ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "", method = RequestMethod.POST)
     public void createTransfer(@Valid @RequestBody Transfer incomingTransfer) {
         Transfer thisTransfer = incomingTransfer;
@@ -33,28 +33,10 @@ public class TransferController {
         transferDao.createTransfer(incomingTransfer.getAccountFrom(), incomingTransfer.getAccountTo(), incomingTransfer.getAmount());
        // results = transferDao.createTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
        // return results;
-    }
-
-//	@RequestMapping(path = "transfer", method = RequestMethod.POST)
-//	public String sendTransferRequest(@RequestBody Transfers transfer) {
-//		String results = transfersDAO.sendTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
-//		return results;
-//	}
-
-    // public void createTransfer(int senderId, int recipientId, BigDecimal amount)
+    }*/
 
 
 }
 
 
-///**
-//     * Create a new reservation for a given hotel
-//     *
-//     * @param reservation
-//     * @param hotelID
-//     */
-//    @ResponseStatus(HttpStatus.CREATED)
-//    @RequestMapping( path = "/hotels/{id}/reservations", method = RequestMethod.POST)
-//    public Reservation addReservation(@Valid @RequestBody Reservation reservation, @PathVariable("id") int hotelID) throws HotelNotFoundException {
-//        return reservationDao.create(reservation, hotelID);
-//    }
+

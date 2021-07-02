@@ -1,12 +1,10 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,9 +15,11 @@ public class JdbcTransferDao implements TransferDao {
 
     private JdbcTemplate jdbcTemplate;
     private BigDecimal zero = new BigDecimal("0.00");
+    private AccountDao accountDao;
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate, AccountDao accountDao) {
 
-    public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.accountDao = accountDao;
     }
 
     @Override
@@ -37,13 +37,49 @@ public class JdbcTransferDao implements TransferDao {
        return transfers;
     }
 
+    public int getTransferTypeId(String transferType){
+        String sql = "SELECT transfer_type_id FROM transfer_types WHERE transfer_type_desc = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferType);
+        if(results.next()) {
+            return results.getInt(1);
+        } else {
+            throw new RuntimeException("Unable to lookup transferType "+transferType);
+        }
+    }
+
+    public int getTransferStatusId(String transferStatus){
+        String sql = "SELECT transfer_status_id FROM transfer_statuses WHERE transfer_status_desc = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferStatus);
+        if(results.next()) {
+            return results.getInt(1);
+        } else {
+            throw new RuntimeException("Unable to lookup transferType "+transferStatus);
+        }
+    }
 
     @Override
     public Transfer getTransfer(int transferId) {
         return null;
     }
 
-    //TODO: I haven't seen an example of a JDBC create method taking more than one parameter
+    @Override
+    public int createTransfer(Transfer newTransfer){
+        int transferTypeId = getTransferTypeId(newTransfer.getTransferType());
+        int transferStatusId = getTransferStatusId(newTransfer.getTransferStatus());
+        //Todo: We had to remove .getId() from line 70 & 71, I don't know why
+        Account fromAccount = accountDao.getAccountByUserId(newTransfer.getUserFrom());
+        Account toAccount = accountDao.getAccountByUserId(newTransfer.getUserTo());
+
+        String sql = "INSERT INTO transfers (transfer_type_id,transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
+        int newTransferId = jdbcTemplate.update(sql, transferTypeId, transferStatusId, fromAccount.getAccountId(), toAccount.getAccountId(), newTransfer.getAmount());
+
+        //log.debug("created new Transfer with ID: "+newTransferId);
+        return newTransferId;
+
+    }
+
+    //TODO: Delete first attempt below
+    /*//TODO: I haven't seen an example of a JDBC create method taking more than one parameter
     //We have only seen it doing "save(CatCard card)" where it takes the full object as a parameter
     //Do we need to the alter the parameters in the TransferController?
     @Override
@@ -53,7 +89,7 @@ public class JdbcTransferDao implements TransferDao {
                 "(SELECT account_id FROM accounts WHERE user_id = ?), " +
                 "(SELECT account_id FROM accounts WHERE user_id = ?), ?);";
         int newId = jdbcTemplate.update(sql, senderId, recipientId, amount);
-    }
+    }*/
 }
 /* @Override
 public City createCity(City city) {
