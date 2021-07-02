@@ -43,14 +43,16 @@ public class JdbcTransferDao implements TransferDao {
         return null;
     }
 
+    //TODO: I haven't seen an example of a JDBC create method taking more than one parameter
+    //We have only seen it doing "save(CatCard card)" where it takes the full object as a parameter
+    //Do we need to the alter the parameters in the TransferController?
     @Override
-    public Transfer createTransfer(Transfer transfer) {
-        String sql = "INSERT INTO transfers (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to,amount)"+
-                "VALUES (?,?,?,?,?,?) RETURNING transfer_id;";
-        int newId = jdbcTemplate.queryForObject(sql, int.class,
-                transfer.getTransferId(), transfer.getTransferType(),transfer.getTransferStatus(),transfer.getAccountFrom(),
-                transfer.getAccountTo(),transfer.getAmount());
-        return getTransfer(newId);
+    public void createTransfer(int senderId, int recipientId, BigDecimal amount) {
+        String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "+
+                "VALUES (2, 2, " +
+                "(SELECT account_id FROM accounts WHERE user_id = ?), " +
+                "(SELECT account_id FROM accounts WHERE user_id = ?), ?);";
+        int newId = jdbcTemplate.update(sql, senderId, recipientId, amount);
     }
 }
 /* @Override

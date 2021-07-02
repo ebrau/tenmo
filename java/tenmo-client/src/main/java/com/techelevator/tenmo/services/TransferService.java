@@ -21,7 +21,7 @@ public class TransferService {
 
     //Constructor
     public TransferService(String baseUrl) {
-        this.url = baseUrl + "transfers/";
+        this.url = baseUrl + "transfers";
     }
 
     //Methods

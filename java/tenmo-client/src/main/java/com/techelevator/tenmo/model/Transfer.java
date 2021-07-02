@@ -14,6 +14,7 @@ public class Transfer {
     //Constructor
     public Transfer(){
 
+        //TODO: WE MAY NOT NEED THIS \/
     }
     public Transfer(int transferId, int transferType,int transferStatus, int accountFrom, int accountTo,BigDecimal amount){
         this.transferId = transferId;
