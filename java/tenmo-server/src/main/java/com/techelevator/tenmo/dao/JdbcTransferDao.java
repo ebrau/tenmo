@@ -64,7 +64,6 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public int createTransfer(Transfer newTransfer){
-
         int transferTypeId = getTransferTypeId(newTransfer.getTransferType());
         int transferStatusId = getTransferStatusId(newTransfer.getTransferStatus());
 

@@ -118,13 +118,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		transferRequest.setUserTo(userTo);
 		transferRequest.setAmount(transferAmount);
 
-		transferService.addTransfer(transferRequest);
+		transferService.createTransfer(transferRequest, currentUser);
 
-
-			//Transfer transferRequest = transferService.createTransfer(userTo, transferAmount, userFrom);
-			//System.out.println(transferRequest.getUserFrom() + " " + transferRequest.getTransferId());
-
-			//In Transfer Service, the addTransfer method itself calls MAKE transfer method
+		System.out.println("The status is: " + transferRequest.getTransferStatus());
 
 	}
 

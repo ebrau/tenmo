@@ -11,7 +11,6 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping(path = "transfers")
 @PreAuthorize("isAuthenticated()")
 public class TransferController {
 
@@ -25,9 +24,9 @@ public class TransferController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "", method = RequestMethod.POST)
-    public void createTransfer(@Valid @RequestBody Transfer incomingTransfer) {
-        transferDao.createTransfer(incomingTransfer);
+    @RequestMapping(path = "/transfers", method = RequestMethod.POST)
+    public int createTransfer(@Valid @RequestBody Transfer incomingTransfer) {
+        return transferDao.createTransfer(incomingTransfer);
     }
 
 }
