@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.Record;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -22,21 +23,41 @@ public class JdbcTransferDao implements TransferDao {
         this.accountDao = accountDao;
     }
 
-    @Override
-    public List<Transfer> transferList(int userId) {
-        List<Transfer>transfers = new ArrayList<>();
-        String sql = "SELECT transfer_id, username " +
-                "FROM users u " +
-                "INNER JOIN accounts a ON u.user_id = a.user_id "+
-                "INNER JOIN transfers t ON a.account_id = t.account_from "+
-                "WHERE u.user_id = ? ;";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-        while(results.next()){
-            //transfers.add(mapRowToTransfer(results));
+    //TODO: Not sure it's working with results.getInt
+    public int getAccountByUserId(int userFrom){
+        String sql = "SELECT account_id FROM accounts WHERE user_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userFrom);
+        if(results.next()) {
+            return results.getInt(1);
+        } else {
+            throw new RuntimeException("Unable to lookup account id by user: "+ userFrom);
         }
-       return transfers;
+
     }
 
+    @Override
+    public List<Record> getTransfersById(int userFrom) {
+        int accountFrom = getAccountByUserId(userFrom);
+        List<Record> allTransfersById = new ArrayList<>();
+        String sql = "SELECT t.transfer_id, 'To: '||u.username AS username, t.amount "
+                + "FROM transfers t "
+                + "INNER JOIN accounts a ON t.account_to = a.account_id "
+                + "INNER JOIN users u ON a.user_id = u.user_id "
+                + "WHERE t.account_from = ? "
+                + "UNION "
+                + "SELECT t.transfer_id, 'From: '||u.username AS username, t.amount "
+                + "FROM transfers t "
+                + "INNER JOIN accounts a ON t.account_from = a.account_id "
+                + "INNER JOIN users u ON a.user_id = u.user_id "
+                + "WHERE t.account_to = ? "
+                + "ORDER BY transfer_id;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountFrom, accountFrom);
+        while (results.next()) {
+            Record records = mapRowToRecord(results);
+            allTransfersById.add(records);
+        }
+        return allTransfersById;
+    }
     public int getTransferTypeId(String transferType){
         String sql = "SELECT transfer_type_id FROM transfer_types WHERE transfer_type_desc = ?";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferType);
@@ -94,5 +115,14 @@ public class JdbcTransferDao implements TransferDao {
         //log.debug("created new Transfer with ID: "+newTransferId);
         return newTransferId;
     }
+
+    private Record mapRowToRecord(SqlRowSet rs) {
+        Record record= new Record();
+        record.setTransferId(rs.getInt("transfer_id"));
+        record.setUser(rs.getString("username"));
+        record.setAmount(rs.getBigDecimal("amount"));
+        return record;
+    }
+
 }
 

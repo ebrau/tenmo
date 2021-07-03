@@ -2,6 +2,7 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
+import com.techelevator.tenmo.model.Record;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +29,10 @@ public class TransferController {
     public int createTransfer(@Valid @RequestBody Transfer incomingTransfer) {
         return transferDao.createTransfer(incomingTransfer);
     }
+
+    @RequestMapping(value = "/transfers/{id}", method = RequestMethod.GET )
+    public Record[] listTrasfersById
+
 
 }
 

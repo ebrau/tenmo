@@ -102,7 +102,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		//Prompt and store userToID (transfer data)
 		int userTo = console.getRecipientId();
 
-		//Prompt and store userFromID (transfer data)
+		//Prompt user for transfer amount
 		BigDecimal transferAmount = console.getTransferAmount();
 
 		//Infer from currentUser the Sender ID
