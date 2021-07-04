@@ -10,9 +10,11 @@ public interface TransferDao {
 
   List<Record> getTransfersById(int userFrom) ;
 
-  Transfer getTransfer(int transferId);
+  //Transfer getTransfer(int transferId);
 
   int createTransfer(Transfer transfer);
+
+  Record getRecordByTransferId(int transferId);
 
 
 }

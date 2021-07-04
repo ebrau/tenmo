@@ -1,9 +1,6 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
@@ -85,7 +82,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+		Record[] testArray = transferService.listTransfersById(currentUser);
+		console.printAllTransfers(testArray);
+		int userInput = console.promptForTransferId();
+		Record test = transferService.getRecordByTransferId(currentUser, userInput);
+		console.printTransferDetails(test);
 	}
 
 	private void viewPendingRequests() {
@@ -100,7 +101,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		console.printAllUsers(currentUser, rawListUsers);
 
 		//Prompt and store userToID (transfer data)
-		int userTo = console.getRecipientId();
+		int userTo = console.promptForRecipientId();
 
 		//Prompt user for transfer amount
 		BigDecimal transferAmount = console.getTransferAmount();

@@ -23,7 +23,6 @@ public class JdbcTransferDao implements TransferDao {
         this.accountDao = accountDao;
     }
 
-    //TODO: Not sure it's working with results.getInt
     public int getAccountByUserId(int userFrom){
         String sql = "SELECT account_id FROM accounts WHERE user_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userFrom);
@@ -32,7 +31,6 @@ public class JdbcTransferDao implements TransferDao {
         } else {
             throw new RuntimeException("Unable to lookup account id by user: "+ userFrom);
         }
-
     }
 
     @Override
@@ -58,6 +56,7 @@ public class JdbcTransferDao implements TransferDao {
         }
         return allTransfersById;
     }
+
     public int getTransferTypeId(String transferType){
         String sql = "SELECT transfer_type_id FROM transfer_types WHERE transfer_type_desc = ?";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferType);
@@ -79,8 +78,25 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public Transfer getTransfer(int transferId) {
-        return null;
+    public Record getRecordByTransferId(int transferId) {
+        Record record = new Record();
+        String sql = "SELECT t.transfer_id, t.amount, tt.transfer_type_desc, ts.transfer_status_desc, ua.username AS user_from, ub.username AS user_to\n" +
+                "FROM transfers t\n" +
+                "INNER JOIN transfer_statuses ts\n" +
+                "ON ts.transfer_status_id = t.transfer_status_id\n" +
+                "INNER JOIN transfer_types tt\n" +
+                "ON t.transfer_type_id = tt.transfer_type_id\n" +
+                "INNER JOIN accounts a ON t.account_from = a.account_id\n" +
+                "INNER JOIN accounts b ON t.account_to = b.account_id\n" +
+                "INNER JOIN users ua ON ua.user_id = a.user_id\n" +
+                "INNER JOIN users ub ON ub.user_id = b.user_id\n" +
+                "WHERE t.transfer_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
+        while (results.next()) {
+            record = mapRowToCompleteRecord(results);
+           // allTransfersByTransferId.add(record);
+        }
+        return record;
     }
 
     @Override
@@ -121,6 +137,17 @@ public class JdbcTransferDao implements TransferDao {
         record.setTransferId(rs.getInt("transfer_id"));
         record.setUser(rs.getString("username"));
         record.setAmount(rs.getBigDecimal("amount"));
+        return record;
+    }
+
+    private Record mapRowToCompleteRecord(SqlRowSet rs) {
+        Record record= new Record();
+        record.setTransferId(rs.getInt("transfer_id"));
+        record.setAmount(rs.getBigDecimal("amount"));
+        record.setTransferTypeDesc(rs.getString("transfer_type_desc"));
+        record.setTransferStatusDesc(rs.getString("transfer_status_desc"));
+        record.setUserNameFrom(rs.getString("user_from"));
+        record.setUserNameTo(rs.getString("user_to"));
         return record;
     }
 

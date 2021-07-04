@@ -2,6 +2,7 @@ package com.techelevator.view;
 
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Record;
 import com.techelevator.tenmo.model.User;
 
 import java.io.InputStream;
@@ -92,7 +93,31 @@ public class ConsoleService {
 		System.out.println("---------");
 	}
 
-	public Integer getRecipientId() {
+	public void printAllTransfers(Record[] rawListRecords) {
+		System.out.println("-------------------------------------------\r\n" +
+				"Transfers\r\n" +
+				"ID\t\t\tFrom/To\t\t\t\tAmount\r\n" +
+				"-------------------------------------------");
+		for (Record r : rawListRecords) {
+			System.out.println(r.getTransferId() + "\t\t" + r.getUser() + "\t\t\t" + r.getAmount());
+		}
+		System.out.println("---------");
+	}
+
+	public void printTransferDetails(Record record) {
+		System.out.println("-------------------------------------------\r\n" +
+				"Transfer Details\r\n" +
+				"-------------------------------------------");
+		System.out.println("Id: " + record.getTransferId());
+		System.out.println("From: " + record.getUserNameFrom());
+		System.out.println("To: " + record.getUserNameTo());
+		System.out.println("Type: " + record.getTransferTypeDesc());
+		System.out.println("Status: " + record.getTransferStatusDesc());
+		System.out.println("Amount: $" + record.getAmount());
+		System.out.println("---------");
+	}
+
+	public Integer promptForRecipientId() {
 		Integer recipientId = 0;
 		do {
 			System.out.print("Enter ID of user you are sending to (0 to cancel):");
@@ -121,6 +146,21 @@ public class ConsoleService {
 		while (transferAmount == 0) ;
 		BigDecimal transferTotal = new BigDecimal(transferAmount.toString());
 		return transferTotal;
+	}
+
+	public Integer promptForTransferId() {
+		Integer transferId = 0;
+		do {
+			System.out.print("Please enter transfer ID to view details (0 to cancel): ");
+			String userInput = in.nextLine();
+			try {
+				transferId = Integer.parseInt(userInput);
+			} catch (NumberFormatException e) {
+				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
+			}
+		}
+		while (transferId == 0);
+		return transferId;
 	}
 
 }

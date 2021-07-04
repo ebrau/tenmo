@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -31,8 +31,17 @@ public class TransferController {
     }
 
     @RequestMapping(value = "/transfers/{id}", method = RequestMethod.GET )
-    public Record[] listTrasfersById
+    public Record[] listTransfersById(@PathVariable("id") int userId) {
+        List<Record> allTransfersById = transferDao.getTransfersById(userId);
+        Record[] transfersArray = new Record[allTransfersById.size()];
+        transfersArray = allTransfersById.toArray(transfersArray);
+        return transfersArray;
+    }
 
+    @RequestMapping(value = "/transfers/{transferId}/details", method = RequestMethod.GET)
+    public Record getRecordByTransferId(@PathVariable int transferId) {
+        return transferDao.getRecordByTransferId(transferId);
+    }
 
 }
 

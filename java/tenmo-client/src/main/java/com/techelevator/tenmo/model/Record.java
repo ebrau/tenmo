@@ -38,8 +38,8 @@ public class Record {
     //    return transferStatus;
     //}
     //public String getTransferType() {
-      //  return transferType;
-   // }
+    //  return transferType;
+    // }
 
     public String getTransferTypeDesc() {
         return transferTypeDesc;
