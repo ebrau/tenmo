@@ -31,10 +31,8 @@ public class TransferService {
     public int createTransfer(Transfer transfer, AuthenticatedUser currentUser){
         try {
             int result = restTemplate.exchange(url, HttpMethod.POST, makeTransferEntity(transfer, currentUser), Integer.class).getBody();
-            //System.out.println(result);
             return result;
         } catch(Exception e){
-           // System.out.println("This happened: " + e.getMessage() + " and " + e.getCause());
             return -1;
         }
     }

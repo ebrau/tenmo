@@ -127,8 +127,6 @@ public class JdbcTransferDao implements TransferDao {
         } else{
             System.out.println("Transfer failed due to insufficient funds");
         }
-
-        //log.debug("created new Transfer with ID: "+newTransferId);
         return newTransferId;
     }
 
