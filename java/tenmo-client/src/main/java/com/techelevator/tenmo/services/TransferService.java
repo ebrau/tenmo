@@ -1,9 +1,6 @@
 package com.techelevator.tenmo.services;
 
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.Record;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.model.*;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
@@ -28,12 +25,12 @@ public class TransferService {
 
     //http://localhost:8080/transfers
 
-    public int createTransfer(Transfer transfer, AuthenticatedUser currentUser){
+    public TransferMoneyResponse createTransfer(Transfer transfer, AuthenticatedUser currentUser){
         try {
-            int result = restTemplate.exchange(url, HttpMethod.POST, makeTransferEntity(transfer, currentUser), Integer.class).getBody();
+            TransferMoneyResponse result = restTemplate.exchange(url, HttpMethod.POST, makeTransferEntity(transfer, currentUser), TransferMoneyResponse.class).getBody();
             return result;
         } catch(Exception e){
-            return -1;
+            return null;
         }
     }
 

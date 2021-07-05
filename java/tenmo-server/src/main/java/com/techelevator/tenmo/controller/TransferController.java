@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.TransferDao;
+import com.techelevator.tenmo.dao.TransferMoneyResponse;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Record;
 import com.techelevator.tenmo.model.Transfer;
@@ -26,7 +27,7 @@ public class TransferController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/transfers", method = RequestMethod.POST)
-    public int createTransfer(@Valid @RequestBody Transfer incomingTransfer) {
+    public TransferMoneyResponse createTransfer(@Valid @RequestBody Transfer incomingTransfer) {
         return transferDao.createTransfer(incomingTransfer);
     }
 

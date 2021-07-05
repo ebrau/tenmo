@@ -75,13 +75,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
 		BigDecimal balance = accountService.seeBalance(currentUser);
 		System.out.println("Your balance is: " + balance);
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
 		Record[] testArray = transferService.listTransfersById(currentUser);
 		console.printAllTransfers(testArray);
 		int userInput = console.promptForTransferId();
@@ -95,21 +93,21 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
 		//Get and Display List of Users
 		User[] rawListUsers = accountService.findAll(currentUser);
 		console.printAllUsers(currentUser, rawListUsers);
 
 		//Prompt and store userToID (transfer data)
 		int userTo = console.promptForRecipientId();
+		if (userTo == 0) {
+			return;
+		}
 
 		//Prompt user for transfer amount
 		BigDecimal transferAmount = console.getTransferAmount();
 
 		//Infer from currentUser the Sender ID
 		int userFrom = currentUser.getUser().getId();
-
-		System.out.println(userTo + " " + transferAmount + " " + userFrom);
 
 		//Once we have the transfer data, we have to create the transfer
 		Transfer transferRequest = new Transfer();
@@ -119,10 +117,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		transferRequest.setUserTo(userTo);
 		transferRequest.setAmount(transferAmount);
 
-		transferService.createTransfer(transferRequest, currentUser);
-
-		System.out.println("The status is: " + transferRequest.getTransferStatus());
-
+		TransferMoneyResponse response = transferService.createTransfer(transferRequest, currentUser);
+		System.out.println(response.getMessage());
 	}
 
 	private void requestBucks() {

@@ -86,7 +86,7 @@ public class ConsoleService {
 				"ID\t\tName\r\n" +
 				"-------------------------------------------");
 		for (User user : rawListUsers) {
-			if (user.getId() != currentUser.getUser().getId()) {
+			if (!user.getId().equals(currentUser.getUser().getId())) {
 				System.out.println(user.getId() + "    " + user.getUsername());
 			}
 		}
@@ -118,9 +118,9 @@ public class ConsoleService {
 	}
 
 	public Integer promptForRecipientId() {
-		Integer recipientId = 0;
+		Integer recipientId = -1;
 		do {
-			System.out.print("Enter ID of user you are sending to (0 to cancel):");
+			System.out.print("Enter ID of user you are sending to (0 to cancel): ");
 			String userInput = in.nextLine();
 			try {
 				recipientId = Integer.parseInt(userInput);
@@ -128,38 +128,37 @@ public class ConsoleService {
 				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
 			}
 		}
-		while (recipientId == 0);
+		while (recipientId < 0);
 		return recipientId;
 	}
 
 	public BigDecimal getTransferAmount() {
-		Integer transferAmount = 0;
+		BigDecimal transferAmount = new BigDecimal("-1.00");
 		do {
 			System.out.print("Enter amount: ");
 			String userInput = in.nextLine();
 			try {
-				transferAmount = Integer.parseInt(userInput);
+				transferAmount = new BigDecimal(userInput);
 			} catch (NumberFormatException e) {
-				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
+				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***. Enter a numeric value." + System.lineSeparator());
 			}
 		}
-		while (transferAmount == 0) ;
-		BigDecimal transferTotal = new BigDecimal(transferAmount.toString());
-		return transferTotal;
+		while (transferAmount.intValue() < 0) ;
+		return transferAmount;
 	}
 
 	public Integer promptForTransferId() {
-		Integer transferId = 0;
+		Integer transferId = -1;
 		do {
 			System.out.print("Please enter transfer ID to view details (0 to cancel): ");
 			String userInput = in.nextLine();
 			try {
 				transferId = Integer.parseInt(userInput);
 			} catch (NumberFormatException e) {
-				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
+				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***. Enter a numeric value." + System.lineSeparator());
 			}
 		}
-		while (transferId == 0);
+		while (transferId < 0);
 		return transferId;
 	}
 

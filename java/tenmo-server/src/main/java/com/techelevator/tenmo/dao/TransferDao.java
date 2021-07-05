@@ -12,7 +12,7 @@ public interface TransferDao {
 
   //Transfer getTransfer(int transferId);
 
-  int createTransfer(Transfer transfer);
+  TransferMoneyResponse createTransfer(Transfer transfer);
 
   Record getRecordByTransferId(int transferId);
 

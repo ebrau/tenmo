@@ -3,6 +3,7 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Record;
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -94,40 +95,44 @@ public class JdbcTransferDao implements TransferDao {
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
         while (results.next()) {
             record = mapRowToCompleteRecord(results);
-           // allTransfersByTransferId.add(record);
         }
         return record;
     }
 
     @Override
-    public int createTransfer(Transfer newTransfer){
+    public TransferMoneyResponse createTransfer(Transfer newTransfer){
+        TransferMoneyResponse response = new TransferMoneyResponse();
+        response.isSuccessful = false;
+
         int transferTypeId = getTransferTypeId(newTransfer.getTransferType());
         int transferStatusId = getTransferStatusId(newTransfer.getTransferStatus());
 
-        //Todo: We had to remove .getId() from line 70 & 71, I don't know why
         Account fromAccount = accountDao.getAccountByUserId(newTransfer.getUserFrom());
         Account toAccount = accountDao.getAccountByUserId(newTransfer.getUserTo());
         BigDecimal amount = newTransfer.getAmount();
-        int newTransferId = 0;
 
-        if (fromAccount == toAccount) {
-            System.out.println("You can't send money to yourself!!!");
-        }
+        if (toAccount == null) {
+            response.message = "That user does not exist. Try again!";
 
-        if(amount.compareTo(fromAccount.getBalance()) == -1 || amount.compareTo(fromAccount.getBalance()) == 0) {
+        } else if (fromAccount.getAccountId() == toAccount.getAccountId()) {
+            response.message = "You can't send money to yourself!!!";
 
+        } else if (!(amount.compareTo(fromAccount.getBalance()) == -1 || amount.compareTo(fromAccount.getBalance()) == 0)) {
+            response.message = "Transfer failed due to insufficient funds.";
+
+        } else {
             String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
-            newTransferId = jdbcTemplate.queryForObject(sql, Integer.class, transferTypeId, transferStatusId,
-                    fromAccount.getAccountId(), toAccount.getAccountId(), newTransfer.getAmount());
+            jdbcTemplate.queryForObject(sql, Integer.class, transferTypeId, transferStatusId,
+                        fromAccount.getAccountId(), toAccount.getAccountId(), newTransfer.getAmount());
 
             accountDao.addtoBalance(amount, newTransfer.getUserTo());
             accountDao.subtractFromBalance(amount, newTransfer.getUserFrom());
 
-            System.out.println("Transfer completed!");
-        } else{
-            System.out.println("Transfer failed due to insufficient funds");
+            response.isSuccessful = true;
+            response.message = "Transfer completed!";
         }
-        return newTransferId;
+
+        return response;
     }
 
     private Record mapRowToRecord(SqlRowSet rs) {
