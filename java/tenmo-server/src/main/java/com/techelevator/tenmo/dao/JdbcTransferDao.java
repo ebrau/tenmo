@@ -103,6 +103,7 @@ public class JdbcTransferDao implements TransferDao {
     public TransferMoneyResponse createTransfer(Transfer newTransfer){
         TransferMoneyResponse response = new TransferMoneyResponse();
         response.isSuccessful = false;
+        BigDecimal zero = new BigDecimal("0.00");
 
         int transferTypeId = getTransferTypeId(newTransfer.getTransferType());
         int transferStatusId = getTransferStatusId(newTransfer.getTransferStatus());
@@ -117,13 +118,16 @@ public class JdbcTransferDao implements TransferDao {
         } else if (fromAccount.getAccountId() == toAccount.getAccountId()) {
             response.message = "You can't send money to yourself!!!";
 
+        } else if (amount.compareTo(BigDecimal.ZERO) == 1) {
+            response.message = "Transfer amount must be larger than $0.00";
+
         } else if (!(amount.compareTo(fromAccount.getBalance()) == -1 || amount.compareTo(fromAccount.getBalance()) == 0)) {
             response.message = "Transfer failed due to insufficient funds.";
 
         } else {
             String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
             jdbcTemplate.queryForObject(sql, Integer.class, transferTypeId, transferStatusId,
-                        fromAccount.getAccountId(), toAccount.getAccountId(), newTransfer.getAmount());
+                    fromAccount.getAccountId(), toAccount.getAccountId(), newTransfer.getAmount());
 
             accountDao.addtoBalance(amount, newTransfer.getUserTo());
             accountDao.subtractFromBalance(amount, newTransfer.getUserFrom());
@@ -133,6 +137,7 @@ public class JdbcTransferDao implements TransferDao {
         }
 
         return response;
+
     }
 
     private Record mapRowToRecord(SqlRowSet rs) {

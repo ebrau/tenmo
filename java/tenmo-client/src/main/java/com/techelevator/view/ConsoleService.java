@@ -125,7 +125,7 @@ public class ConsoleService {
 			try {
 				recipientId = Integer.parseInt(userInput);
 			} catch (NumberFormatException e) {
-				System.out.println(System.lineSeparator() + "*** " + userInput + " is not valid ***" + System.lineSeparator());
+				System.out.println("That user does not exist. Try again!" + System.lineSeparator());
 			}
 		}
 		while (recipientId < 0);

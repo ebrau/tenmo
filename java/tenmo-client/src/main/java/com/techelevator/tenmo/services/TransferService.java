@@ -30,6 +30,7 @@ public class TransferService {
             TransferMoneyResponse result = restTemplate.exchange(url, HttpMethod.POST, makeTransferEntity(transfer, currentUser), TransferMoneyResponse.class).getBody();
             return result;
         } catch(Exception e){
+            System.out.println("We were unable to process your request. Please retry with correct data.");
             return null;
         }
     }

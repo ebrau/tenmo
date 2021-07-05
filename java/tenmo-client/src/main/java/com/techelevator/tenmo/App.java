@@ -83,6 +83,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		Record[] testArray = transferService.listTransfersById(currentUser);
 		console.printAllTransfers(testArray);
 		int userInput = console.promptForTransferId();
+		if (userInput == 0) {
+			return;
+		}
 		Record test = transferService.getRecordByTransferId(currentUser, userInput);
 		console.printTransferDetails(test);
 	}
@@ -117,8 +120,12 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		transferRequest.setUserTo(userTo);
 		transferRequest.setAmount(transferAmount);
 
-		TransferMoneyResponse response = transferService.createTransfer(transferRequest, currentUser);
-		System.out.println(response.getMessage());
+		try {
+			TransferMoneyResponse response = transferService.createTransfer(transferRequest, currentUser);
+			System.out.println(response.getMessage());
+		} catch (Exception e) {
+			System.out.println("We were unable to process your request. Please retry with correct data.");
+		}
 	}
 
 	private void requestBucks() {
