@@ -15,8 +15,6 @@ public class TransferService {
     private RestTemplate restTemplate = new RestTemplate();
     private User user;
     private final String INVALID_TRANSFER_MSG = "Invalid Transfer. You did not supply the correct information.";
-    private AuthenticatedUser currentUser;
-    public static String AUTH_TOKEN = "";
 
     //Constructor
     public TransferService(String baseUrl) {
@@ -30,7 +28,6 @@ public class TransferService {
             TransferMoneyResponse result = restTemplate.exchange(url, HttpMethod.POST, makeTransferEntity(transfer, currentUser), TransferMoneyResponse.class).getBody();
             return result;
         } catch(Exception e){
-            System.out.println("We were unable to process your request. Please retry with correct data.");
             return null;
         }
     }

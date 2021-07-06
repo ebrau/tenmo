@@ -103,7 +103,6 @@ public class JdbcTransferDao implements TransferDao {
     public TransferMoneyResponse createTransfer(Transfer newTransfer){
         TransferMoneyResponse response = new TransferMoneyResponse();
         response.isSuccessful = false;
-        BigDecimal zero = new BigDecimal("0.00");
 
         int transferTypeId = getTransferTypeId(newTransfer.getTransferType());
         int transferStatusId = getTransferStatusId(newTransfer.getTransferStatus());
@@ -117,9 +116,6 @@ public class JdbcTransferDao implements TransferDao {
 
         } else if (fromAccount.getAccountId() == toAccount.getAccountId()) {
             response.message = "You can't send money to yourself!!!";
-
-        } else if (amount.compareTo(BigDecimal.ZERO) == 1) {
-            response.message = "Transfer amount must be larger than $0.00";
 
         } else if (!(amount.compareTo(fromAccount.getBalance()) == -1 || amount.compareTo(fromAccount.getBalance()) == 0)) {
             response.message = "Transfer failed due to insufficient funds.";
