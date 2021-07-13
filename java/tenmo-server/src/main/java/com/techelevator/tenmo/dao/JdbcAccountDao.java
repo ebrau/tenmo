@@ -30,22 +30,7 @@ public class JdbcAccountDao implements AccountDao {
             return zero;
         }
     }
-
-    //Attempt
-    /*@Override
-    public Account getAccountByUserId(int userId){
-        Account account = null;
-        String sql = "SELECT * FROM accounts WHERE user_id = ?";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-        if(results.next()){
-            account = mapRowToAccount(results);
-            return account;
-        } else {
-            throw new RuntimeException("Unable to lookup account by userId " + userId);
-        }
-    }*/
-
-    //New One with while
+    
     @Override
     public Account getAccountByUserId(int userId){
         Account account = null;
